@@ -1,16 +1,22 @@
+import 'dart:typed_data';
+//import 'dart:html' as html;
+
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
 import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 
-class ResWebNotSuccess extends StatelessWidget {
+class ResWebSuccess extends StatelessWidget {
+
   ScreenshotController screenshotController=ScreenshotController();
-  ConfirmResponseModel confirmResponseModel;
-  NewModelTest newModelTest;
+  ConfirmV2ResponseModel confirmResponseModel;
+  //InquiryV4ResponseModel inquiryV5ResponseModel;
+  InquiryV5ResponseModel inquiryV5ResponseModel;
   String myAccount;
 
-  ResWebNotSuccess({required this.confirmResponseModel,required this.newModelTest,required this.myAccount,super.key});
+  ResWebSuccess({required this.confirmResponseModel,required this.inquiryV5ResponseModel,required this.myAccount,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +60,7 @@ class ResWebNotSuccess extends StatelessWidget {
                           width: 10,
                         ),
                          Text(
-                          newModelTest.data.supplier.name,
+                          inquiryV5ResponseModel.data.merchant.name,
                           style:const TextStyle(fontSize: 18),
                         )
                       ],
@@ -68,14 +74,14 @@ class ResWebNotSuccess extends StatelessWidget {
                         ),
                         RichText(
                             text: TextSpan(
-                                text: ' ${ConvertFormat.convertCurrency(newModelTest.data.balances[0].totalAmount, newModelTest.data.balances[0].currency)}',
+                                text: '- ${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)}',
                                 style: TextStyle(
                                     fontSize: 30,
                                     color: CONST.fontColor,
                                     fontWeight: FontWeight.bold),
                                 children: [
                               TextSpan(
-                                  text: newModelTest.data.balances[0].currency,
+                                  text: inquiryV5ResponseModel.data.transaction.currency,
                                   style: TextStyle(
                                       fontSize: 18, color: CONST.fontColor))
                             ]))
@@ -99,7 +105,7 @@ class ResWebNotSuccess extends StatelessWidget {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].billAmount, newModelTest.data.balances[0].currency)} ${newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.originalAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -111,11 +117,11 @@ class ResWebNotSuccess extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Convinience fee",
+                                  "Convenience fee",
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                   "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].feeAmount, newModelTest.data.balances[0].currency)} ${newModelTest.data.balances[0].currency}",
+                                   "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -137,7 +143,7 @@ class ResWebNotSuccess extends StatelessWidget {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                    "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].totalAmount, newModelTest.data.balances[0].currency)} ${newModelTest.data.balances[0].currency}",
+                                    "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -156,7 +162,7 @@ class ResWebNotSuccess extends StatelessWidget {
                     Column(
                       children: [
                         Image.asset(
-                          "asset/cancel.png",
+                          "asset/check.png",
                           height: 80,
                           width: 80,
                         ),
@@ -164,13 +170,16 @@ class ResWebNotSuccess extends StatelessWidget {
                           height: 20,
                         ),
                         Text(
-                          confirmResponseModel.code,
+                          "Success",
                           style: TextStyle(fontSize: 28, color: CONST.fontColor),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        
+                        Text(
+                          "Thank you for your payment",
+                          style: TextStyle(color: CONST.fontColor),
+                        ),
                         const SizedBox(
                           height: 40,
                         ),
@@ -274,7 +283,7 @@ class ResWebNotSuccess extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "Convinience fee",
+                                "Convenience fee",
                                 style: TextStyle(color: CONST.fontColor),
                               ),
                               Text(
@@ -360,5 +369,14 @@ class ResWebNotSuccess extends StatelessWidget {
             ),
           ),
         ));
+  }
+  void saveBytesAsImageFile(Uint8List image, String fileName) {
+    // final blob = html.Blob([image]);
+    // final url = html.Url.createObjectUrlFromBlob(blob);
+    // html.AnchorElement(href: url)
+    //   ..target = 'blob'
+    //   ..download = fileName
+    //   ..click();
+    // html.Url.revokeObjectUrl(url);
   }
 }

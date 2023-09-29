@@ -1,42 +1,41 @@
-class Transaction{
+
+class Transaction {
   String id;
   double originalAmount;
-  double convinienceFeeAmount;
+  double convenienceFeeAmount;
   double sponsorFeeAmount;
   String feeChannel;
   double totalAmount;
   String currency;
   String description;
-  int minAmount;
-  int maxAmount;
+  double minAmount;
+  double maxAmount;
   String paymentToken;
-  Transaction({
-    required this.id,
-    required this.originalAmount,
-    required this.convinienceFeeAmount,
-    required this.sponsorFeeAmount,
-    required this.feeChannel,
-    required this.totalAmount,
-    required this.currency,
-    required this.description,
-    required this.minAmount,
-    required this.maxAmount,
-    required this.paymentToken
-  });
+  Transaction(
+      {required this.id,
+      required this.originalAmount,
+      required this.convenienceFeeAmount,
+      required this.sponsorFeeAmount,
+      required this.feeChannel,
+      required this.totalAmount,
+      required this.currency,
+      required this.description,
+      required this.minAmount,
+      required this.maxAmount,
+      required this.paymentToken});
 
-
-  factory Transaction.fromJson(Map<String,dynamic> json){
+  factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
-        id: json['id'], 
-        originalAmount: json['original_amount'],
-       convinienceFeeAmount: json['convinience_fee_amount'], 
-       sponsorFeeAmount: json['sponsor_fee_amount'], 
-       feeChannel: json['fee_channel'], 
-       totalAmount: json['total_amount'], 
-       currency: json['currency'], 
-       description: json['description'],
-       minAmount: json['min_amount'],
-      maxAmount: json['max_amount'], 
-      paymentToken: json['payment_token']);
+        id: json['id'],
+        originalAmount: json['original_amount'].toDouble(),
+        convenienceFeeAmount: json['convenience_fee_amount'].toDouble(),
+        sponsorFeeAmount: json['sponsor_fee_amount'].toDouble(),
+        feeChannel: json['fee_channel'],
+        totalAmount: json['total_amount'].toDouble(),
+        currency: json['currency'],
+        description: json['description'],
+        minAmount: json['min'].toDouble(),
+        maxAmount: json['max'].toDouble(),
+        paymentToken: json['payment_token']);
   }
 }

@@ -1,16 +1,25 @@
 import 'package:deeplink_cookbook/core/api/submit_payment.dart';
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
-import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
+import 'package:deeplink_cookbook/core/models/confirm_request_model.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_not_suceess.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_success.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_not_suceess.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 class ResWebConfirmWithOPT extends StatefulWidget {
-  NewModelTest newModelTest;
+
+  //InquiryV4ResponseModel inquiryV5ResponseModel;
+  InquiryV5ResponseModel inquiryV5ResponseModel;
   String myAccount;
-  ResWebConfirmWithOPT({required this.newModelTest,required this.myAccount, super.key});
+  String identityCode;
+  ResWebConfirmWithOPT({
+    required this.inquiryV5ResponseModel,
+    required this.myAccount, 
+    required this.identityCode,
+    super.key});
 
   @override
   State<ResWebConfirmWithOPT> createState() => _ResWebConfirmWithOPTState();
@@ -33,135 +42,6 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
     _isCorrectOTP = true;
   }
 
-   _showErrorConfirmDialog(ConfirmResponseModel responseModel) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            actions: [
-              GestureDetector(
-                  onTap: () =>
-                      Navigator.popUntil(context, (route) => route.isFirst),
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(color: CONST.backColor),
-                    child: Text(
-                      "Close",
-                      style: TextStyle(color: CONST.white),
-                    ),
-                  ))
-            ],
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: CONST.backColor),
-                    child: Text(
-                      responseModel.code,
-                      style: TextStyle(color: CONST.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const SelectableText(("Message : ")),
-                            SelectableText(
-                              responseModel.message,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Message_Kh : ")),
-                            SelectableText(
-                              responseModel.messageKh!,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        const Divider(
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Receipt : ")),
-                            SelectableText(
-                              responseModel.data.receiptCode,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Paid Date  : ")),
-                            SelectableText(
-                              ConvertFormat.convertDateTimeToString(
-                                  responseModel.data.paidDate),
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Ref No : ")),
-                            SelectableText(
-                              responseModel.data.refNo,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Total Amount : ")),
-                            SelectableText(
-                              "${ConvertFormat.convertCurrency(responseModel.data.totalAmount, responseModel.data.currency)} ${responseModel.data.currency}",
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +85,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                           width: 10,
                         ),
                         Text(
-                          widget.newModelTest.data.supplier.name,
+                          widget.inquiryV5ResponseModel.data.merchant.name,
                           style: const TextStyle(fontSize: 18),
                         )
                       ],
@@ -228,9 +108,9 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                           RichText(
                               text: TextSpan(
                                   text: ConvertFormat.convertCurrency(
-                                      widget.newModelTest.data.balances[0]
-                                          .billAmount,
-                                      widget.newModelTest.data.balances[0]
+                                      widget.inquiryV5ResponseModel.data.transaction
+                                          .originalAmount,
+                                      widget.inquiryV5ResponseModel.data.transaction
                                           .currency),
                                   style: TextStyle(
                                       fontSize: 30,
@@ -239,7 +119,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   children: [
                                 TextSpan(
                                     text: widget
-                                        .newModelTest.data.balances[0].currency,
+                                        .inquiryV5ResponseModel.data.transaction.currency,
                                     style: TextStyle(
                                         fontSize: 18, color: CONST.fontColor))
                               ]))
@@ -265,7 +145,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].billAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -277,11 +157,11 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Convinience fee",
+                                  "Convenience fee",
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].feeAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -303,7 +183,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].totalAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -450,18 +330,38 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                 _isCorrectOTP = true;
                                 //context.goNamed('success');
                               });
-                              
-                              var confirmResponseModel = await SubmitPayment.submitPayment();
+
+                              final now=DateTime.now();
+                              String guid=now.microsecondsSinceEpoch.toString();
+                              var confirmResponseModel = await SubmitPayment.submitV2Payment(
+                                ConfirmV2RequestModel(
+                                  billCode: widget.identityCode, 
+                                  customerCode: widget.identityCode, 
+                                  billAmount: widget.inquiryV5ResponseModel.data.transaction.originalAmount, 
+                                  totalAmount: widget.inquiryV5ResponseModel.data.transaction.totalAmount, 
+                                  currency: widget.inquiryV5ResponseModel.data.transaction.currency, 
+                                  paymentToken: widget.inquiryV5ResponseModel.data.transaction.paymentToken, 
+                                  paymentBy: widget.myAccount, 
+                                  paymentAccount: widget.myAccount, 
+                                  paymentType: "Online", 
+                                  refNo: guid, 
+                                  note: "payment from deeplink", 
+                                  paymentAccountName: widget.myAccount, 
+                                  paymentAccountPhoneNumber: widget.myAccount, 
+                                  paymentFee: widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, 
+                                  paymentChannel: widget.inquiryV5ResponseModel.data.transaction.feeChannel, 
+                                  paymentFeeChargeBy: "")
+                              );
                                 if (confirmResponseModel.code != "SUCCESS") {
                                    await Navigator.pushReplacement(
                                       (context),
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              WebResponsiveNotSuccess.sendData(
+                                              WebMainNotSuccess.sendData(
                                                 confirmResponseModel:
                                                     confirmResponseModel,
-                                                newModelTest:
-                                                    widget.newModelTest,
+                                                inquiryV5ResponseModel:
+                                                    widget.inquiryV5ResponseModel,
                                                     myAccount: widget.myAccount,
                                               )));
                                 } else {
@@ -469,11 +369,11 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                       (context),
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              WebResponsiveSuccess.sendData(
+                                              WebMainSuccess.sendData(
                                                 confirmResponseModel:
                                                     confirmResponseModel,
-                                                newModelTest:
-                                                    widget.newModelTest,
+                                                inquiryV5ResponseModel:
+                                                    widget.inquiryV5ResponseModel,
                                                     myAccount: widget.myAccount,
                                               )));
                                 }

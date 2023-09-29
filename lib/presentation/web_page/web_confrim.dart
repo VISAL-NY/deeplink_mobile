@@ -1,12 +1,15 @@
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_with_otp.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_with_otp.dart';
 import 'package:flutter/material.dart';
 
 class WebConfirm extends StatefulWidget {
-  NewModelTest newModelTest;
+  //InquiryV4ResponseModel inquiryV5ResponseModel;
+  InquiryV5ResponseModel inquiryV5ResponseModel;
   String myAccount;
-  WebConfirm({required this.newModelTest,required this.myAccount, super.key});
+  String identityCode;
+  WebConfirm({required this.inquiryV5ResponseModel,required this.myAccount,required this.identityCode, super.key});
 
   @override
   State<WebConfirm> createState() => _WebConfirmState();
@@ -23,22 +26,30 @@ class _WebConfirmState extends State<WebConfirm> {
   _buildLeftSideWidget(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              "asset/shop.png",
-              height: 40,
-              width: 40,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              widget.newModelTest.data.supplier.name,
-              style: const TextStyle(fontSize: 18),
-            )
-          ],
+        Container(
+          alignment: Alignment.center,
+          width: 240,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "asset/shop.png",
+                height: 40,
+                width: 40,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                widget.inquiryV5ResponseModel.data.merchant.name,
+                style: const TextStyle(
+                  fontSize: 18
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+              )
+            ],
+          ),
         ),
         const SizedBox(
           height: 40,
@@ -56,15 +67,15 @@ class _WebConfirmState extends State<WebConfirm> {
             RichText(
                 text: TextSpan(
                     text: ConvertFormat.convertCurrency(
-                        widget.newModelTest.data.balances[0].billAmount,
-                        widget.newModelTest.data.balances[0].currency),
+                        widget.inquiryV5ResponseModel.data.transaction.originalAmount,
+                        widget.inquiryV5ResponseModel.data.transaction.currency),
                     style: TextStyle(
                         fontSize: 30,
                         color: CONST.fontColor,
                         fontWeight: FontWeight.bold),
                     children: [
                   TextSpan(
-                      text: '  KHR',
+                      text: ' ${widget.inquiryV5ResponseModel.data.transaction.currency}',
                       style: TextStyle(fontSize: 18, color: CONST.fontColor))
                 ]))
           ],
@@ -88,8 +99,8 @@ class _WebConfirmState extends State<WebConfirm> {
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].billAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
-                      //"${newModelTest.data.balances[0].billAmount} ${newModelTest.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                      //"${inquiryV5ResponseModel.data.transaction.billAmount} ${inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -101,11 +112,11 @@ class _WebConfirmState extends State<WebConfirm> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Convinience fee",
+                      "Convenience fee",
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].feeAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -130,7 +141,7 @@ class _WebConfirmState extends State<WebConfirm> {
                       ),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].totalAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(
                         color: CONST.white,
                         fontWeight: FontWeight.bold,
@@ -181,9 +192,10 @@ class _WebConfirmState extends State<WebConfirm> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => WebResponsiveWithOTP.sendData(
-                          newModelTest: widget.newModelTest,
+                    builder: (context) => WebMainWithOTP.sendData(
+                          inquiryV5ResponseModel: widget.inquiryV5ResponseModel,
                           myAccount: widget.myAccount,
+                          identityCode: widget.identityCode,
                         )));
           },
           child: Container(
@@ -292,7 +304,7 @@ class _WebConfirmState extends State<WebConfirm> {
                       _controller.text = BankAccountNumber.thirdAccount;
                       _isThirdBankAccountSelected = true;
                       _isFirstBankAccountSelected = false;
-                      _isThirdBankAccountSelected = false;
+                      _isSecondBankAccountSelected = false;
                       widget.myAccount=_controller.text;
                     });
                     Navigator.pop(context);

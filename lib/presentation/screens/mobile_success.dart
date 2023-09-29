@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
 import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
 import 'package:deeplink_cookbook/presentation/screenshot_widget/screenshot.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,11 @@ import 'package:url_launcher/url_launcher.dart';
 class MobileSuccessScreen extends StatelessWidget {
 
   late String myAccount;
-  late NewModelTest newModelTest;
-  late ConfirmResponseModel confirmResponseModel;
+  //late InquiryV4ResponseModel inquiryV5ResponseModel;
+  late InquiryV5ResponseModel inquiryV5ResponseModel;
+  late ConfirmV3ResponseModel confirmResponseModel;
   MobileSuccessScreen({super.key});
-  MobileSuccessScreen.sendData({required this.myAccount,required this.newModelTest,required this.confirmResponseModel,super.key});
+  MobileSuccessScreen.sendData({required this.myAccount,required this.inquiryV5ResponseModel,required this.confirmResponseModel,super.key});
 
   ScreenshotController screenshotController = ScreenshotController();
 
@@ -81,7 +83,7 @@ class MobileSuccessScreen extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          newModelTest.data.supplier.name,
+                          inquiryV5ResponseModel.data.merchant.name,
                           style: TextStyle(color: CONST.fontColor),
                         ),
                         const SizedBox(
@@ -89,14 +91,14 @@ class MobileSuccessScreen extends StatelessWidget {
                         ),
                         RichText(
                             text: TextSpan(
-                                text: '- ${ConvertFormat.convertCurrency(newModelTest.data.balances[0].totalAmount, newModelTest.data.balances[0].currency)}',
+                                text: '- ${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)}',
                                 style: TextStyle(
                                     color: CONST.fontColor,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold),
                                 children: [
                               TextSpan(
-                                  text: newModelTest.data.balances[0].currency,
+                                  text: inquiryV5ResponseModel.data.transaction.currency,
                                   style: TextStyle(
                                       color: CONST.fontColor,
                                       fontSize: 16,
@@ -111,7 +113,7 @@ class MobileSuccessScreen extends StatelessWidget {
                             Text("Transaction Date",
                                 style: TextStyle(color: CONST.fontColor)),
                             Text(
-                              ConvertFormat.convertDateTimeToString(confirmResponseModel.data.paidDate),
+                              ConvertFormat.convertDateTimeToString(""),
                                 style: TextStyle(color: CONST.fontColor))
                           ],
                         ),
@@ -124,7 +126,7 @@ class MobileSuccessScreen extends StatelessWidget {
                             Text("Refference number",
                                 style: TextStyle(color: CONST.fontColor)),
                             Text(
-                             confirmResponseModel.data.refNo,
+                             confirmResponseModel.data.transaction.bankRef,
                                 style: TextStyle(color: CONST.fontColor))
                           ],
                         ),
@@ -149,7 +151,7 @@ class MobileSuccessScreen extends StatelessWidget {
                             Text("Original amount",
                                 style: TextStyle(color: CONST.fontColor)),
                             Text(
-                              "${ConvertFormat.convertCurrency(confirmResponseModel.data.billAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                              "${ConvertFormat.convertCurrency(confirmResponseModel.data.transaction.originalAmount, confirmResponseModel.data.transaction.currency)} ${confirmResponseModel.data.transaction.currency}",
                                 style: TextStyle(color: CONST.fontColor))
                           ],
                         ),
@@ -162,7 +164,7 @@ class MobileSuccessScreen extends StatelessWidget {
                             Text("Convineince fee",
                                 style: TextStyle(color: CONST.fontColor)),
                             Text(
-                                "${ConvertFormat.convertCurrency(confirmResponseModel.data.feeAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                                "${ConvertFormat.convertCurrency(confirmResponseModel.data.transaction.convenienceFeeAmount, confirmResponseModel.data.transaction.currency)} ${confirmResponseModel.data.transaction.currency}",
                                 style: TextStyle(color: CONST.fontColor))
                           ],
                         ),
@@ -181,7 +183,7 @@ class MobileSuccessScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                     color: CONST.fontColor)),
                             Text(
-                                "${ConvertFormat.convertCurrency(confirmResponseModel.data.totalAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                                "${ConvertFormat.convertCurrency(confirmResponseModel.data.transaction.totalAmount, confirmResponseModel.data.transaction.currency)} ${confirmResponseModel.data.transaction.currency}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: CONST.fontColor))

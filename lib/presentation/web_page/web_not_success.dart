@@ -1,5 +1,6 @@
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
 import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
@@ -7,10 +8,11 @@ import 'package:screenshot/screenshot.dart';
 class WebNotSuccess extends StatelessWidget {
   ScreenshotController screenshotController = ScreenshotController();
 
-   ConfirmResponseModel confirmResponseModel;
-   NewModelTest newModelTest;
+   ConfirmV2ResponseModel confirmResponseModel;
+   //InquiryV4ResponseModel inquiryV5ResponseModel;
+   InquiryV5ResponseModel inquiryV5ResponseModel;
    String myAccount;
-   WebNotSuccess({required this.confirmResponseModel ,required this.newModelTest,required this.myAccount,super.key});
+   WebNotSuccess({required this.confirmResponseModel ,required this.inquiryV5ResponseModel,required this.myAccount,super.key});
 
  _buildLeftSideWidget(BuildContext context) {
     return Column(
@@ -27,7 +29,7 @@ class WebNotSuccess extends StatelessWidget {
               width: 10,
             ),
              Text(
-              newModelTest.data.supplier.name,
+              inquiryV5ResponseModel.data.merchant.name,
               style:const TextStyle(fontSize: 18),
             )
           ],
@@ -43,14 +45,14 @@ class WebNotSuccess extends StatelessWidget {
             ),
             RichText(
                 text: TextSpan(
-                    text: ' ${ConvertFormat.convertCurrency(newModelTest.data.balances[0].totalAmount, newModelTest.data.balances[0].currency)}',
+                    text: ' ${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)}',
                     style: TextStyle(
                         fontSize: 30,
                         color: CONST.fontColor,
                         fontWeight: FontWeight.bold),
                     children: [
                   TextSpan(
-                      text: '  ${newModelTest.data.balances[0].currency}',
+                      text: '  ${inquiryV5ResponseModel.data.transaction.currency}',
                       style: TextStyle(fontSize: 18, color: CONST.fontColor))
                 ]))
           ],
@@ -74,7 +76,7 @@ class WebNotSuccess extends StatelessWidget {
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].billAmount, newModelTest.data.balances[0].currency)}  ${newModelTest.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.originalAmount, inquiryV5ResponseModel.data.transaction.currency)}  ${inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -86,11 +88,11 @@ class WebNotSuccess extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Convinience fee",
+                      "Convenience fee",
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].feeAmount, newModelTest.data.balances[0].currency)}  ${newModelTest.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, inquiryV5ResponseModel.data.transaction.currency)}  ${inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -115,7 +117,7 @@ class WebNotSuccess extends StatelessWidget {
                       ),
                     ),
                     Text(
-                     "${ConvertFormat.convertCurrency(newModelTest.data.balances[0].totalAmount, newModelTest.data.balances[0].currency)}  ${newModelTest.data.balances[0].currency}",
+                     "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)}  ${inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(
                         color: CONST.white,
                         fontWeight: FontWeight.bold,
@@ -251,7 +253,7 @@ class WebNotSuccess extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Text(
-                "Convinience fee",
+                "Convenience fee",
                 style: TextStyle(color: CONST.fontColor),
               ),
               SelectableText(

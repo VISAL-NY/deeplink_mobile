@@ -1,14 +1,16 @@
 
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_with_otp.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_with_otp.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ResWebConfirm extends StatefulWidget {
-  late NewModelTest newModelTest;
+  //late InquiryV4ResponseModel inquiryV5ResponseModel;
+  InquiryV5ResponseModel inquiryV5ResponseModel;
   late String myAccount;
-  ResWebConfirm({required this.newModelTest,required this.myAccount});
+  String identityCode;
+  ResWebConfirm({required this.inquiryV5ResponseModel,required this.myAccount,required this.identityCode,super.key});
 
   @override
   State<ResWebConfirm> createState() => _ResWebConfirmState();
@@ -114,7 +116,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                           _controller.text = BankAccountNumber.thirdAccount;
                           _isThirdBankAccountSelected = true;
                           _isFirstBankAccountSelected = false;
-                          _isThirdBankAccountSelected = false;
+                          _isSecondBankAccountSelected = false;
                         });
                         Navigator.pop(context);
                       },
@@ -160,22 +162,29 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          "asset/shop.png",
-                          height: 40,
-                          width: 40,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          widget.newModelTest.data.supplier.name,
-                          style: const TextStyle(fontSize: 18),
-                        )
-                      ],
+                    Container(
+                      alignment: Alignment.center,
+                      width: 200,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            "asset/shop.png",
+                            height: 40,
+                            width: 40,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            widget.inquiryV5ResponseModel.data.merchant.name,
+                            style: const TextStyle(fontSize: 18,height: 1.5),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            
+                          )
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       height: 40,
@@ -195,9 +204,9 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                           RichText(
                               text: TextSpan(
                                   text: ConvertFormat.convertCurrency(
-                                      widget.newModelTest.data.balances[0]
-                                          .billAmount,
-                                      widget.newModelTest.data.balances[0]
+                                      widget.inquiryV5ResponseModel.data.transaction
+                                          .originalAmount,
+                                      widget.inquiryV5ResponseModel.data.transaction
                                           .currency),
                                   style: TextStyle(
                                       fontSize: 30,
@@ -206,7 +215,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   children: [
                                 TextSpan(
                                     text:
-                                        '  ${widget.newModelTest.data.balances[0].currency}',
+                                        '  ${widget.inquiryV5ResponseModel.data.transaction.currency}',
                                     style: TextStyle(
                                         fontSize: 18, color: CONST.fontColor))
                               ]))
@@ -232,7 +241,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].billAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -244,11 +253,11 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Convinience fee",
+                                  "Convenience fee",
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].feeAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -270,7 +279,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.newModelTest.data.balances[0].totalAmount, widget.newModelTest.data.balances[0].currency)} ${widget.newModelTest.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -320,9 +329,10 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        WebResponsiveWithOTP.sendData(
-                                          newModelTest: widget.newModelTest,
+                                        WebMainWithOTP.sendData(
+                                          inquiryV5ResponseModel: widget.inquiryV5ResponseModel,
                                           myAccount: widget.myAccount,
+                                          identityCode: widget.identityCode,
                                         )));
                           },
                           child: Container(

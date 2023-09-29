@@ -1,19 +1,25 @@
-
 import 'package:deeplink_cookbook/core/api/submit_payment.dart';
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
+import 'package:deeplink_cookbook/core/models/confirm_request_model.dart';
 import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_not_suceess.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_responsive_success.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_not_suceess.dart';
+import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:uuid/uuid.dart';
 
 class WebConfrimWithOTP extends StatefulWidget {
-
-  NewModelTest newtestModel;
+  //InquiryV4ResponseModel inquiryV5ResponseModel;
+  InquiryV5ResponseModel inquiryV5ResponseModel;
   String myAccount;
-  WebConfrimWithOTP({required this.newtestModel,required this.myAccount,super.key});
+  String identityCode;
+  WebConfrimWithOTP(
+      {required this.inquiryV5ResponseModel,
+      required this.myAccount,
+      required this.identityCode,
+      super.key});
 
   @override
   State<WebConfrimWithOTP> createState() => _WebConfrimWithOTPState();
@@ -29,7 +35,6 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
   final _secondFocusNode = FocusNode();
   final _thirdFocusNode = FocusNode();
   final _fourFocusNode = FocusNode();
-
 
   @override
   void initState() {
@@ -51,9 +56,9 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
             const SizedBox(
               width: 10,
             ),
-             Text(
-             widget.newtestModel.data.supplier.name,
-              style:const TextStyle(fontSize: 18),
+            Text(
+              widget.inquiryV5ResponseModel.data.merchant.name,
+              style: const TextStyle(fontSize: 18),
             )
           ],
         ),
@@ -72,14 +77,19 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
             ),
             RichText(
                 text: TextSpan(
-                    text: ConvertFormat.convertCurrency(widget.newtestModel.data.balances[0].billAmount, widget.newtestModel.data.balances[0].currency),
+                    text: ConvertFormat.convertCurrency(
+                        widget.inquiryV5ResponseModel.data.transaction
+                            .originalAmount,
+                        widget
+                            .inquiryV5ResponseModel.data.transaction.currency),
                     style: TextStyle(
                         fontSize: 30,
                         color: CONST.fontColor,
                         fontWeight: FontWeight.bold),
                     children: [
                   TextSpan(
-                      text: widget.newtestModel.data.balances[0].currency,
+                      text:
+                          ' ${widget.inquiryV5ResponseModel.data.transaction.currency}',
                       style: TextStyle(fontSize: 18, color: CONST.fontColor))
                 ]))
           ],
@@ -103,7 +113,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newtestModel.data.balances[0].billAmount, widget.newtestModel.data.balances[0].currency)} ${widget.newtestModel.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -115,11 +125,11 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Convinience fee",
+                      "Convenience fee",
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newtestModel.data.balances[0].feeAmount, widget.newtestModel.data.balances[0].currency)} ${widget.newtestModel.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -144,7 +154,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                       ),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.newtestModel.data.balances[0].totalAmount, widget.newtestModel.data.balances[0].currency)} ${widget.newtestModel.data.balances[0].currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
                       style: TextStyle(
                         color: CONST.white,
                         fontWeight: FontWeight.bold,
@@ -270,9 +280,11 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                   'Wrong OTP',
                   style: TextStyle(color: Colors.red),
                 )),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         GestureDetector(
-          onTap: () async{
+          onTap: () async {
             if (_firstOTP.text == '1' &&
                 _secondOTP.text == '2' &&
                 _thirdOTP.text == '3' &&
@@ -280,23 +292,93 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
               setState(() {
                 _isCorrectOTP = true;
                 //context.goNamed('success');
-               
               });
-              var confirmResponseModel= await SubmitPayment.submitPayment();
-               if(confirmResponseModel.code !="SUCCESS"){
-                await Navigator.pushReplacement((context), MaterialPageRoute(builder: (context)=>WebResponsiveNotSuccess.sendData(
-                  confirmResponseModel: confirmResponseModel,
-                  newModelTest:widget.newtestModel ,
-                  myAccount: widget.myAccount,
-                  )));
-               } 
-               else{
-                await Navigator.pushReplacement((context), MaterialPageRoute(builder: (context)=>WebResponsiveSuccess.sendData(
-                  confirmResponseModel: confirmResponseModel,
-                  newModelTest:widget.newtestModel ,
-                  myAccount: widget.myAccount,
-                  )));
-               }
+
+              // final now = DateTime.now();
+              // String guid=now.microsecondsSinceEpoch.toString();
+
+              // var confirmResponseModel = await SubmitPayment.submitPayment(
+              //     ConfirmRequestModel(
+              //         billCode: widget.identityCode,
+              //         customerCode: widget.identityCode,
+              //         billAmount: widget.inquiryV5ResponseModel.data.transaction
+              //             .originalAmount,
+              //         totalAmount: widget
+              //             .inquiryV5ResponseModel.data.transaction.totalAmount,
+              //         currency: widget
+              //             .inquiryV5ResponseModel.data.transaction.currency,
+              //         paymentToken: widget
+              //             .inquiryV5ResponseModel.data.transaction.paymentToken,
+              //         paymentBy: widget.myAccount,
+              //         paymentAccount: widget.myAccount,
+              //         paymentType: "Online",
+              //         refNo: guid,
+              //         note: "payment from deeplink",
+              //         paymentAccountName: widget.myAccount,
+              //         paymentAccountPhoneNumber: widget.myAccount,
+              //         paymentFee: widget.inquiryV5ResponseModel.data.transaction
+              //             .convenienceFeeAmount,
+              //         paymentChannel: widget
+              //             .inquiryV5ResponseModel.data.transaction.feeChannel,
+              //         paymentFeeChargeBy: ""));
+
+              FutureBuilder(
+                future: confirmAsync(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.code != "SUCCESS") {
+                      Navigator.pushReplacement(
+                          (context),
+                          MaterialPageRoute(
+                              builder: (context) => WebMainNotSuccess.sendData(
+                                    confirmResponseModel: snapshot.data!,
+                                    inquiryV5ResponseModel:
+                                        widget.inquiryV5ResponseModel,
+                                    myAccount: widget.myAccount,
+                                  )));
+                    } else {
+                      Navigator.pushReplacement(
+                          (context),
+                          MaterialPageRoute(
+                              builder: (context) => WebMainSuccess.sendData(
+                                    confirmResponseModel: snapshot.data!,
+                                    inquiryV5ResponseModel:
+                                        widget.inquiryV5ResponseModel,
+                                    myAccount: widget.myAccount,
+                                  )));
+                    }
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("ERROR SUBMIT PAYMENT"),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              );
+
+              // if (confirmResponseModel.code != "SUCCESS") {
+              //   await Navigator.pushReplacement(
+              //       (context),
+              //       MaterialPageRoute(
+              //           builder: (context) => WebMainNotSuccess.sendData(
+              //                 confirmResponseModel: confirmResponseModel,
+              //                 inquiryV5ResponseModel:
+              //                     widget.inquiryV5ResponseModel,
+              //                 myAccount: widget.myAccount,
+              //               )));
+              // } else {
+              //   await Navigator.pushReplacement(
+              //       (context),
+              //       MaterialPageRoute(
+              //           builder: (context) => WebMainSuccess.sendData(
+              //                 confirmResponseModel: confirmResponseModel,
+              //                 inquiryV5ResponseModel:
+              //                     widget.inquiryV5ResponseModel,
+              //                 myAccount: widget.myAccount,
+              //               )));
+              // }
             } else {
               setState(() {
                 _isCorrectOTP = false;
@@ -322,134 +404,30 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
     );
   }
 
-   _showErrorConfirmDialog(ConfirmResponseModel responseModel) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            actions: [
-              GestureDetector(
-                  onTap: () =>
-                      Navigator.popUntil(context, (route) => route.isFirst),
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(color: CONST.backColor),
-                    child: Text(
-                      "Close",
-                      style: TextStyle(color: CONST.white),
-                    ),
-                  ))
-            ],
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: CONST.backColor),
-                    child: Text(
-                      responseModel.code,
-                      style: TextStyle(color: CONST.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const SelectableText(("Message : ")),
-                            SelectableText(
-                              responseModel.message,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Message_Kh : ")),
-                            SelectableText(
-                              responseModel.messageKh!,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        const Divider(
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Receipt : ")),
-                            SelectableText(
-                              responseModel.data.receiptCode,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Paid Date  : ")),
-                            SelectableText(
-                              ConvertFormat.convertDateTimeToString(
-                                  responseModel.data.paidDate),
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Ref No : ")),
-                            SelectableText(
-                              responseModel.data.refNo,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const SelectableText(("Total Amount : ")),
-                            SelectableText(
-                              "${ConvertFormat.convertCurrency(responseModel.data.totalAmount, responseModel.data.currency)} ${responseModel.data.currency}",
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
-        });
+  Future<ConfirmV2ResponseModel> confirmAsync() {
+    final now = DateTime.now();
+    String guid = now.microsecondsSinceEpoch.toString();
+    return SubmitPayment.submitV2Payment(ConfirmV2RequestModel(
+        billCode: widget.identityCode,
+        customerCode: widget.identityCode,
+        billAmount:
+            widget.inquiryV5ResponseModel.data.transaction.originalAmount,
+        totalAmount: widget.inquiryV5ResponseModel.data.transaction.totalAmount,
+        currency: widget.inquiryV5ResponseModel.data.transaction.currency,
+        paymentToken:
+            widget.inquiryV5ResponseModel.data.transaction.paymentToken,
+        paymentBy: widget.myAccount,
+        paymentAccount: widget.myAccount,
+        paymentType: "Online",
+        refNo:const Uuid().v1(),
+        note: "payment from deeplink",
+        paymentAccountName: widget.myAccount,
+        paymentAccountPhoneNumber: widget.myAccount,
+        paymentFee:
+            widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount,
+        paymentChannel:
+            widget.inquiryV5ResponseModel.data.transaction.feeChannel,
+        paymentFeeChargeBy: ""));
   }
 
   @override

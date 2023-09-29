@@ -1,4 +1,7 @@
 
+import 'package:deeplink_cookbook/core/helper/decode_base64.dart';
+import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
+import 'package:deeplink_cookbook/core/models/inquriy_request_model.dart';
 import 'package:deeplink_cookbook/presentation/screens/mobile_pin_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +10,8 @@ import '../../core/helper/convert_format.dart';
 import '../../core/models/models.dart';
 
 class MobileConfirmScreen extends StatefulWidget {
-  
-
-  const MobileConfirmScreen({super.key});
+  final String id;
+  const MobileConfirmScreen( this.id,{super.key});
 
   @override
   State<MobileConfirmScreen> createState() => _MobileConfirmScreenState();
@@ -17,6 +19,8 @@ class MobileConfirmScreen extends StatefulWidget {
 
 class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
    String myAccount = "";
+   String id="";
+
   final _controller =
       TextEditingController(text: BankAccountNumber.firstAccount);
 
@@ -28,103 +32,110 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
-          return Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: CONST.backColor,
-                  height: 40,
-                  child: Text(
-                    "Please Select account",
-                    style: TextStyle(color: CONST.white, fontSize: 18),
-                  ),
-                ),
-                GestureDetector(
-                  child: ListTile(
-                    leading: Text(
-                      BankAccountNumber.firstAccount,
-                      style: TextStyle(color: CONST.fontColor, fontSize: 16),
-                    ),
-                    trailing: Icon(
-                      Icons.radio_button_checked,
-                      color: _isFirstBankAccountSelected
-                          ? CONST.backColor
-                          : Colors.grey,
+          return SafeArea(
+            child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    color: CONST.backColor,
+                    height: 40,
+                    child: Text(
+                      "Please Select account",
+                      style: TextStyle(color: CONST.white, fontSize: 18),
                     ),
                   ),
-                  onTap: () {
-                    setState(() {
-                      //////////////////////////////
-                      _controller.text = BankAccountNumber.firstAccount;
-                      _isFirstBankAccountSelected = true;
-                      _isSecondBankAccountSelected = false;
-                      _isThirdBankAccountSelected = false;
-                      myAccount = _controller.text;
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-                GestureDetector(
-                  child: ListTile(
-                    leading: Text(
-                      BankAccountNumber.secondAccount,
-                      style: TextStyle(color: CONST.fontColor, fontSize: 16),
+                  GestureDetector(
+                    child: ListTile(
+                      leading: Text(
+                        BankAccountNumber.firstAccount,
+                        style: TextStyle(color: CONST.fontColor, fontSize: 16),
+                      ),
+                      trailing: Icon(
+                        Icons.radio_button_checked,
+                        color: _isFirstBankAccountSelected
+                            ? CONST.backColor
+                            : Colors.grey,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.radio_button_checked,
-                      color: _isSecondBankAccountSelected
-                          ? CONST.backColor
-                          : Colors.grey,
-                    ),
+                    onTap: () {
+                      setState(() {
+                        //////////////////////////////
+                        _controller.text = BankAccountNumber.firstAccount;
+                        _isFirstBankAccountSelected = true;
+                        _isSecondBankAccountSelected = false;
+                        _isThirdBankAccountSelected = false;
+                        myAccount = _controller.text;
+                      });
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    setState(() {
-                      //////////////////////
-                      _controller.text = BankAccountNumber.secondAccount;
-                      _isSecondBankAccountSelected = true;
-                      _isFirstBankAccountSelected = false;
-                      _isThirdBankAccountSelected = false;
-                      myAccount = _controller.text;
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-                GestureDetector(
-                  child: ListTile(
-                    leading: Text(
-                      BankAccountNumber.thirdAccount,
-                      style: TextStyle(color: CONST.fontColor, fontSize: 16),
+                  GestureDetector(
+                    child: ListTile(
+                      leading: Text(
+                        BankAccountNumber.secondAccount,
+                        style: TextStyle(color: CONST.fontColor, fontSize: 16),
+                      ),
+                      trailing: Icon(
+                        Icons.radio_button_checked,
+                        color: _isSecondBankAccountSelected
+                            ? CONST.backColor
+                            : Colors.grey,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.radio_button_checked,
-                      color: _isThirdBankAccountSelected
-                          ? CONST.backColor
-                          : Colors.grey,
-                    ),
+                    onTap: () {
+                      setState(() {
+                        //////////////////////
+                        _controller.text = BankAccountNumber.secondAccount;
+                        _isSecondBankAccountSelected = true;
+                        _isFirstBankAccountSelected = false;
+                        _isThirdBankAccountSelected = false;
+                        myAccount = _controller.text;
+                      });
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    setState(() {
-                      //////////////////////////
-                      _controller.text = BankAccountNumber.thirdAccount;
-                      _isThirdBankAccountSelected = true;
-                      _isFirstBankAccountSelected = false;
-                      _isThirdBankAccountSelected = false;
-                      myAccount = _controller.text;
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                  GestureDetector(
+                    child: ListTile(
+                      leading: Text(
+                        BankAccountNumber.thirdAccount,
+                        style: TextStyle(color: CONST.fontColor, fontSize: 16),
+                      ),
+                      trailing: Icon(
+                        Icons.radio_button_checked,
+                        color: _isThirdBankAccountSelected
+                            ? CONST.backColor
+                            : Colors.grey,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        //////////////////////////
+                        _controller.text = BankAccountNumber.thirdAccount;
+                        _isThirdBankAccountSelected = true;
+                        _isFirstBankAccountSelected = false;
+                        _isSecondBankAccountSelected = false;
+                        myAccount = _controller.text;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         });
   }
 
-  Future<NewModelTest> inquiryModel()  {
-    return  InquiryRequest.requestInquiry();
+  // Future<InquiryV4ResponseModel> inquiryV4Model() {
+  //   return  InquiryRequest.requestInquiryV4();
+  // }
+
+  Future<InquiryV5ResponseModel> inquiryV5Model(){
+    var identityCode=DecodeBase64.decodeBase64(widget.id);
+    return InquiryRequest.requestInquiryV5(InquiryV5RequestModel(identityCode: identityCode, feeChannel: "MERCHANT"));
   }
 
   @override
@@ -145,7 +156,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
             style:const TextStyle(fontSize: 18),
           )),
       body: FutureBuilder(
-        future: InquiryRequest.requestInquiry(),
+        future: inquiryV5Model(),
         builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Column(
@@ -173,7 +184,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                               height: 10,
                             ),
                             Text(
-                              snapshot.data!.data.supplier.name,
+                              snapshot.data!.data.merchant.name,
                               style:
                                   TextStyle(fontSize: 16, color: CONST.white),
                             )
@@ -228,7 +239,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.balances[0].billAmount, snapshot.data!.data.balances[0].currency)}  ${snapshot.data!.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.originalAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
                                   style: TextStyle(color: CONST.fontColor))
                             ],
                           ),
@@ -238,12 +249,12 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Convinien Fee",
+                              Text("Convenience fee",
                                   style: TextStyle(
                                       color: CONST.fontColor,
                                       fontWeight: FontWeight.w500)),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.balances[0].feeAmount, snapshot.data!.data.balances[0].currency)}  ${snapshot.data!.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.convenienceFeeAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
                                   style: TextStyle(color: CONST.fontColor))
                             ],
                           ),
@@ -262,7 +273,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                       color: CONST.fontColor,
                                       fontWeight: FontWeight.w500)),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.balances[0].totalAmount, snapshot.data!.data.balances[0].currency)}  ${snapshot.data!.data.balances[0].currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.totalAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: CONST.fontColor,
@@ -286,7 +297,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                   builder: (context) =>
                                       MobilePinScreen.sendData(
                                         myAccount: myAccount,
-                                        newModelTest: snapshot.data!,
+                                        inquiryV5ResponseModel: snapshot.data!,
                                       )));
                         },
                         child: Container(

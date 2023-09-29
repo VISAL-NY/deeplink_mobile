@@ -1,22 +1,22 @@
-class ConfirmResponseModel{
+class ConfirmV2ResponseModel{
   String code;
   String message;
   String? messageKh;
-  Data data;
+  ConfirmV2Data data;
 
-  ConfirmResponseModel({required this.code,required this.message,required this.messageKh,required this.data});
+  ConfirmV2ResponseModel({required this.code,required this.message,required this.messageKh,required this.data});
 
-  factory ConfirmResponseModel.fromJson(Map<String,dynamic> json){
-    return ConfirmResponseModel(
+  factory ConfirmV2ResponseModel.fromJson(Map<String,dynamic> json){
+    return ConfirmV2ResponseModel(
       code: json['code'], 
       message: json['message'], 
       messageKh: json['message_kh'], 
-      data: Data.fromJson(json['data'] as Map<String,dynamic>));
+      data: ConfirmV2Data.fromJson(json['data'] as Map<String,dynamic>));
   }
 
 }
 
-class Data{
+class ConfirmV2Data{
   String paymentAccountName;
   String paymentAccountPhoneNumber;
   double paymentFee;
@@ -38,7 +38,7 @@ class Data{
   String refNo;
   String note;
 
-  Data({
+  ConfirmV2Data({
     required this.paymentAccountName,
     required this.paymentAccountPhoneNumber,
     required this.paymentFee,
@@ -61,8 +61,8 @@ class Data{
     required this.note,
   });
 
-  factory Data.fromJson(Map<String,dynamic> json){
-    return Data(
+  factory ConfirmV2Data.fromJson(Map<String,dynamic> json){
+    return ConfirmV2Data(
       paymentAccountName: json['payment_account_name'], 
       paymentAccountPhoneNumber: json['payment_account_phone_number'], 
       paymentFee: json['payment_fee'].toDouble(), 
@@ -85,3 +85,85 @@ class Data{
       note: json['note']);
   }
 }
+
+
+class ConfirmV3ResponseModel{
+  String code;
+  String message;
+  String? messageKh;
+  ConfirmV3Data data;
+  ConfirmV3ResponseModel({required this.code,required this.message,required this.messageKh,required this.data});
+
+  factory ConfirmV3ResponseModel.fromJson(Map<String,dynamic> json){
+    return ConfirmV3ResponseModel(
+      code: json['code'], 
+      message: json['message'], 
+      messageKh: json['message_kh'], 
+      data:ConfirmV3Data.fromJson(json['data'] as Map<String,dynamic>)
+       );
+  }
+}
+
+class ConfirmV3Data{
+  MerchantResponseV3 merchant;
+  TransactionResponseV3 transaction;
+
+  ConfirmV3Data({required this.merchant,required this.transaction});
+
+  factory ConfirmV3Data.fromJson(Map<String,dynamic> json){
+    return ConfirmV3Data(
+      merchant: MerchantResponseV3.fromJson(json['merchant'] as Map<String,dynamic>), 
+      transaction: TransactionResponseV3.fromJson(json['transaction'] as Map<String,dynamic>)
+      );
+  }
+}
+class MerchantResponseV3{
+  String code;
+  String name;
+  MerchantResponseV3({required this.code,required this.name});
+
+  factory MerchantResponseV3.fromJson(Map<String,dynamic> json){
+    return MerchantResponseV3(
+      code: json['code'], 
+      name: json['name']
+      );
+  }
+}
+
+class TransactionResponseV3{
+  String id;
+  double originalAmount;
+  double convenienceFeeAmount;
+  double sponsorFeeAmount;
+  String feeChannel;
+  double totalAmount;
+  String currency;
+  String description;
+  String bankRef;
+
+  TransactionResponseV3({
+    required this.id,
+    required this.originalAmount,
+    required this.convenienceFeeAmount,
+    required this.sponsorFeeAmount,
+    required this.feeChannel,
+    required this.totalAmount,
+    required this.currency,
+    required this.description,
+    required this.bankRef
+  });
+
+  factory TransactionResponseV3.fromJson(Map<String,dynamic> json){
+    return TransactionResponseV3(
+      id: json['id'], 
+      originalAmount: json['original_amount'], 
+      convenienceFeeAmount: json['convenience_fee_amount'], 
+      sponsorFeeAmount: json['sponsor_fee_amount'], 
+      feeChannel: json['fee_channel'], 
+      totalAmount: json['total_amount'], 
+      currency: json['currency'], 
+      description: json['description'],
+       bankRef: json['bank_ref']);
+  }
+}
+
