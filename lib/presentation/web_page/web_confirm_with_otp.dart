@@ -1,14 +1,10 @@
-import 'package:deeplink_cookbook/core/api/submit_payment.dart';
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
-import 'package:deeplink_cookbook/core/models/confirm_request_model.dart';
-import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
 import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_not_suceess.dart';
 import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uuid/uuid.dart';
+
 
 class WebConfrimWithOTP extends StatefulWidget {
   //InquiryV4ResponseModel inquiryV5ResponseModel;
@@ -57,7 +53,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
               width: 10,
             ),
             Text(
-              widget.inquiryV5ResponseModel.data.merchant.name,
+              widget.inquiryV5ResponseModel.data!.merchant.name,
               style: const TextStyle(fontSize: 18),
             )
           ],
@@ -78,10 +74,10 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
             RichText(
                 text: TextSpan(
                     text: ConvertFormat.convertCurrency(
-                        widget.inquiryV5ResponseModel.data.transaction
+                        widget.inquiryV5ResponseModel.data!.transaction!
                             .originalAmount,
                         widget
-                            .inquiryV5ResponseModel.data.transaction.currency),
+                            .inquiryV5ResponseModel.data!.transaction!.currency),
                     style: TextStyle(
                         fontSize: 30,
                         color: CONST.fontColor,
@@ -89,7 +85,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                     children: [
                   TextSpan(
                       text:
-                          ' ${widget.inquiryV5ResponseModel.data.transaction.currency}',
+                          ' ${widget.inquiryV5ResponseModel.data!.transaction!.currency}',
                       style: TextStyle(fontSize: 18, color: CONST.fontColor))
                 ]))
           ],
@@ -113,7 +109,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.originalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -129,7 +125,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                       style: TextStyle(color: CONST.white),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.convenienceFeeAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                       style: TextStyle(color: CONST.white),
                     )
                   ],
@@ -154,7 +150,7 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                       ),
                     ),
                     Text(
-                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                      "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.totalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                       style: TextStyle(
                         color: CONST.white,
                         fontWeight: FontWeight.bold,
@@ -294,6 +290,14 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
                 //context.goNamed('success');
               });
 
+
+              Navigator.pushReplacement((context),MaterialPageRoute(builder: (context)=>
+               WebMainSuccess.sendData(
+                identityCode: widget.identityCode,
+                 inquiryV5ResponseModel: widget.inquiryV5ResponseModel, 
+                 myAccount: widget.myAccount)
+              ));
+
               // final now = DateTime.now();
               // String guid=now.microsecondsSinceEpoch.toString();
 
@@ -301,14 +305,14 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
               //     ConfirmRequestModel(
               //         billCode: widget.identityCode,
               //         customerCode: widget.identityCode,
-              //         billAmount: widget.inquiryV5ResponseModel.data.transaction
+              //         billAmount: widget.inquiryV5ResponseModel.data!.transaction!
               //             .originalAmount,
               //         totalAmount: widget
-              //             .inquiryV5ResponseModel.data.transaction.totalAmount,
+              //             .inquiryV5ResponseModel.data!.transaction!.totalAmount,
               //         currency: widget
-              //             .inquiryV5ResponseModel.data.transaction.currency,
+              //             .inquiryV5ResponseModel.data!.transaction!.currency,
               //         paymentToken: widget
-              //             .inquiryV5ResponseModel.data.transaction.paymentToken,
+              //             .inquiryV5ResponseModel.data!.transaction!.paymentToken,
               //         paymentBy: widget.myAccount,
               //         paymentAccount: widget.myAccount,
               //         paymentType: "Online",
@@ -316,47 +320,47 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
               //         note: "payment from deeplink",
               //         paymentAccountName: widget.myAccount,
               //         paymentAccountPhoneNumber: widget.myAccount,
-              //         paymentFee: widget.inquiryV5ResponseModel.data.transaction
+              //         paymentFee: widget.inquiryV5ResponseModel.data!.transaction!
               //             .convenienceFeeAmount,
               //         paymentChannel: widget
-              //             .inquiryV5ResponseModel.data.transaction.feeChannel,
+              //             .inquiryV5ResponseModel.data!.transaction!.feeChannel,
               //         paymentFeeChargeBy: ""));
 
-              FutureBuilder(
-                future: confirmAsync(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data!.code != "SUCCESS") {
-                      Navigator.pushReplacement(
-                          (context),
-                          MaterialPageRoute(
-                              builder: (context) => WebMainNotSuccess.sendData(
-                                    confirmResponseModel: snapshot.data!,
-                                    inquiryV5ResponseModel:
-                                        widget.inquiryV5ResponseModel,
-                                    myAccount: widget.myAccount,
-                                  )));
-                    } else {
-                      Navigator.pushReplacement(
-                          (context),
-                          MaterialPageRoute(
-                              builder: (context) => WebMainSuccess.sendData(
-                                    confirmResponseModel: snapshot.data!,
-                                    inquiryV5ResponseModel:
-                                        widget.inquiryV5ResponseModel,
-                                    myAccount: widget.myAccount,
-                                  )));
-                    }
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text("ERROR SUBMIT PAYMENT"),
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              );
+              // FutureBuilder(
+              //   future: confirmAsync(),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.hasData) {
+              //       if (snapshot.data!.code != "SUCCESS") {
+              //         Navigator.pushReplacement(
+              //             (context),
+              //             MaterialPageRoute(
+              //                 builder: (context) => WebMainNotSuccess.sendData(
+              //                       confirmResponseModel: snapshot.data!,
+              //                       inquiryV5ResponseModel:
+              //                           widget.inquiryV5ResponseModel,
+              //                       myAccount: widget.myAccount,
+              //                     )));
+              //       } else {
+              //         Navigator.pushReplacement(
+              //             (context),
+              //             MaterialPageRoute(
+              //                 builder: (context) => WebMainSuccess.sendData(
+              //                       confirmResponseModel: snapshot.data!,
+              //                       inquiryV5ResponseModel:
+              //                           widget.inquiryV5ResponseModel,
+              //                       myAccount: widget.myAccount,
+              //                     )));
+              //       }
+              //     } else if (snapshot.hasError) {
+              //       return const Center(
+              //         child: Text("ERROR SUBMIT PAYMENT"),
+              //       );
+              //     }
+              //     return const Center(
+              //       child: CircularProgressIndicator(),
+              //     );
+              //   },
+              // );
 
               // if (confirmResponseModel.code != "SUCCESS") {
               //   await Navigator.pushReplacement(
@@ -404,31 +408,6 @@ class _WebConfrimWithOTPState extends State<WebConfrimWithOTP> {
     );
   }
 
-  Future<ConfirmV2ResponseModel> confirmAsync() {
-    final now = DateTime.now();
-    String guid = now.microsecondsSinceEpoch.toString();
-    return SubmitPayment.submitV2Payment(ConfirmV2RequestModel(
-        billCode: widget.identityCode,
-        customerCode: widget.identityCode,
-        billAmount:
-            widget.inquiryV5ResponseModel.data.transaction.originalAmount,
-        totalAmount: widget.inquiryV5ResponseModel.data.transaction.totalAmount,
-        currency: widget.inquiryV5ResponseModel.data.transaction.currency,
-        paymentToken:
-            widget.inquiryV5ResponseModel.data.transaction.paymentToken,
-        paymentBy: widget.myAccount,
-        paymentAccount: widget.myAccount,
-        paymentType: "Online",
-        refNo:const Uuid().v1(),
-        note: "payment from deeplink",
-        paymentAccountName: widget.myAccount,
-        paymentAccountPhoneNumber: widget.myAccount,
-        paymentFee:
-            widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount,
-        paymentChannel:
-            widget.inquiryV5ResponseModel.data.transaction.feeChannel,
-        paymentFeeChargeBy: ""));
-  }
 
   @override
   Widget build(BuildContext context) {

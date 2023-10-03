@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.bill24.sampledeeplink">
+    package="com.example.samplebank.deeplink">
     <application
         android:label="deeplink_cookbook"
         android:name="${applicationName}"

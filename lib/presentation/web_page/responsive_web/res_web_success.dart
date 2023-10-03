@@ -11,7 +11,7 @@ import 'package:screenshot/screenshot.dart';
 class ResWebSuccess extends StatelessWidget {
 
   ScreenshotController screenshotController=ScreenshotController();
-  ConfirmV2ResponseModel confirmResponseModel;
+  ConfirmV3ResponseModel confirmResponseModel;
   //InquiryV4ResponseModel inquiryV5ResponseModel;
   InquiryV5ResponseModel inquiryV5ResponseModel;
   String myAccount;
@@ -60,7 +60,7 @@ class ResWebSuccess extends StatelessWidget {
                           width: 10,
                         ),
                          Text(
-                          inquiryV5ResponseModel.data.merchant.name,
+                          inquiryV5ResponseModel.data!.merchant.name,
                           style:const TextStyle(fontSize: 18),
                         )
                       ],
@@ -74,14 +74,14 @@ class ResWebSuccess extends StatelessWidget {
                         ),
                         RichText(
                             text: TextSpan(
-                                text: '- ${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)}',
+                                text: '- ${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data!.transaction!.totalAmount, inquiryV5ResponseModel.data!.transaction!.currency)}',
                                 style: TextStyle(
                                     fontSize: 30,
                                     color: CONST.fontColor,
                                     fontWeight: FontWeight.bold),
                                 children: [
                               TextSpan(
-                                  text: inquiryV5ResponseModel.data.transaction.currency,
+                                  text: inquiryV5ResponseModel.data!.transaction!.currency,
                                   style: TextStyle(
                                       fontSize: 18, color: CONST.fontColor))
                             ]))
@@ -105,7 +105,7 @@ class ResWebSuccess extends StatelessWidget {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.originalAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data!.transaction!.originalAmount, inquiryV5ResponseModel.data!.transaction!.currency)} ${inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -121,7 +121,7 @@ class ResWebSuccess extends StatelessWidget {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                   "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
+                                   "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data!.transaction!.convenienceFeeAmount, inquiryV5ResponseModel.data!.transaction!.currency)} ${inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -143,7 +143,7 @@ class ResWebSuccess extends StatelessWidget {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                    "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data.transaction.totalAmount, inquiryV5ResponseModel.data.transaction.currency)} ${inquiryV5ResponseModel.data.transaction.currency}",
+                                    "${ConvertFormat.convertCurrency(inquiryV5ResponseModel.data!.transaction!.totalAmount, inquiryV5ResponseModel.data!.transaction!.currency)} ${inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -183,28 +183,28 @@ class ResWebSuccess extends StatelessWidget {
                         const SizedBox(
                           height: 40,
                         ),
-                        SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.7,
-                          height: 20,
-                          child: const Divider(),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.7,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                "Transaction Date",
-                                style: TextStyle(color: CONST.fontColor),
-                              ),
-                              Text(
-                                ConvertFormat.convertDateTimeToString(confirmResponseModel.data.paidDate),
-                                style: TextStyle(color: CONST.fontColor),
-                              )
-                            ],
-                          ),
-                        ),
+                        // SizedBox(
+                        //   width: MediaQuery.sizeOf(context).width * 0.7,
+                        //   height: 20,
+                        //   child: const Divider(),
+                        // ),
+                        // SizedBox(
+                        //   width: MediaQuery.sizeOf(context).width * 0.7,
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     mainAxisSize: MainAxisSize.max,
+                        //     children: [
+                        //       Text(
+                        //         "Transaction Date",
+                        //         style: TextStyle(color: CONST.fontColor),
+                        //       ),
+                        //       Text(
+                        //         ConvertFormat.convertDateTimeToString(confirmResponseModel.data.paidDate),
+                        //         style: TextStyle(color: CONST.fontColor),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                         SizedBox(
                           width: MediaQuery.sizeOf(context).width * 0.7,
                           height: 20,
@@ -221,7 +221,7 @@ class ResWebSuccess extends StatelessWidget {
                                 style: TextStyle(color: CONST.fontColor),
                               ),
                               Text(
-                                confirmResponseModel.data.refNo,
+                                confirmResponseModel.data!.transaction!.bankRef,
                                 style: TextStyle(color: CONST.fontColor),
                               )
                             ],
@@ -265,7 +265,7 @@ class ResWebSuccess extends StatelessWidget {
                                 style: TextStyle(color: CONST.fontColor),
                               ),
                               Text(
-                                   "${ConvertFormat.convertCurrency(confirmResponseModel.data.billAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                                   "${ConvertFormat.convertCurrency(confirmResponseModel.data!.transaction!.convenienceFeeAmount, confirmResponseModel.data!.transaction!.currency)} ${confirmResponseModel.data!.transaction!.currency}",
                                 style: TextStyle(color: CONST.fontColor),
                               )
                             ],
@@ -287,7 +287,7 @@ class ResWebSuccess extends StatelessWidget {
                                 style: TextStyle(color: CONST.fontColor),
                               ),
                               Text(
-                                  "${ConvertFormat.convertCurrency(confirmResponseModel.data.feeAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                                  "${ConvertFormat.convertCurrency(confirmResponseModel.data!.transaction!.convenienceFeeAmount, confirmResponseModel.data!.transaction!.currency)} ${confirmResponseModel.data!.transaction!.currency}",
                                 style: TextStyle(color: CONST.fontColor),
                               )
                             ],
@@ -309,7 +309,7 @@ class ResWebSuccess extends StatelessWidget {
                                 style: TextStyle(color: CONST.fontColor),
                               ),
                               Text(
-                                  "${ConvertFormat.convertCurrency(confirmResponseModel.data.totalAmount, confirmResponseModel.data.currency)} ${confirmResponseModel.data.currency}",
+                                  "${ConvertFormat.convertCurrency(confirmResponseModel.data!.transaction!.totalAmount, confirmResponseModel.data!.transaction!.currency)} ${confirmResponseModel.data!.transaction!.currency}",
                                 style: TextStyle(color: CONST.fontColor),
                               )
                             ],

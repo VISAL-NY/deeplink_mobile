@@ -91,29 +91,29 @@ class ConfirmV3ResponseModel{
   String code;
   String message;
   String? messageKh;
-  ConfirmV3Data data;
+  ConfirmV3Data? data;
   ConfirmV3ResponseModel({required this.code,required this.message,required this.messageKh,required this.data});
 
   factory ConfirmV3ResponseModel.fromJson(Map<String,dynamic> json){
     return ConfirmV3ResponseModel(
       code: json['code'], 
       message: json['message'], 
-      messageKh: json['message_kh'], 
-      data:ConfirmV3Data.fromJson(json['data'] as Map<String,dynamic>)
+      messageKh: json['message_kh'] ?? "", 
+      data:json['data']!=null? ConfirmV3Data.fromJson(json['data'] as Map<String,dynamic>):null
        );
   }
 }
 
 class ConfirmV3Data{
-  MerchantResponseV3 merchant;
-  TransactionResponseV3 transaction;
+  MerchantResponseV3? merchant;
+  TransactionResponseV3? transaction;
 
   ConfirmV3Data({required this.merchant,required this.transaction});
 
   factory ConfirmV3Data.fromJson(Map<String,dynamic> json){
     return ConfirmV3Data(
-      merchant: MerchantResponseV3.fromJson(json['merchant'] as Map<String,dynamic>), 
-      transaction: TransactionResponseV3.fromJson(json['transaction'] as Map<String,dynamic>)
+      merchant: json['merchant']!=null? MerchantResponseV3.fromJson(json['merchant'] as Map<String,dynamic>) :null, 
+      transaction: json['transaction']!=null? TransactionResponseV3.fromJson(json['transaction'] as Map<String,dynamic>):null
       );
   }
 }

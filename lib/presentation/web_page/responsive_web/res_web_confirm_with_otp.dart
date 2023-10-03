@@ -1,13 +1,13 @@
-import 'package:deeplink_cookbook/core/api/submit_payment.dart';
+
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
-import 'package:deeplink_cookbook/core/models/confirm_request_model.dart';
+
 import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_not_suceess.dart';
 import 'package:deeplink_cookbook/presentation/web_page/main_responsive/web_main_success.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uuid/uuid.dart';
+
 
 class ResWebConfirmWithOPT extends StatefulWidget {
 
@@ -85,7 +85,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                           width: 10,
                         ),
                         Text(
-                          widget.inquiryV5ResponseModel.data.merchant.name,
+                          widget.inquiryV5ResponseModel.data!.merchant.name,
                           style: const TextStyle(fontSize: 18),
                         )
                       ],
@@ -108,9 +108,9 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                           RichText(
                               text: TextSpan(
                                   text: ConvertFormat.convertCurrency(
-                                      widget.inquiryV5ResponseModel.data.transaction
+                                      widget.inquiryV5ResponseModel.data!.transaction!
                                           .originalAmount,
-                                      widget.inquiryV5ResponseModel.data.transaction
+                                      widget.inquiryV5ResponseModel.data!.transaction!
                                           .currency),
                                   style: TextStyle(
                                       fontSize: 30,
@@ -119,7 +119,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   children: [
                                 TextSpan(
                                     text: widget
-                                        .inquiryV5ResponseModel.data.transaction.currency,
+                                        .inquiryV5ResponseModel.data!.transaction!.currency,
                                     style: TextStyle(
                                         fontSize: 18, color: CONST.fontColor))
                               ]))
@@ -145,7 +145,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.originalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -161,7 +161,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.convenienceFeeAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -183,7 +183,7 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.totalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -330,53 +330,59 @@ class _ResWebConfirmWithOPTState extends State<ResWebConfirmWithOPT> {
                                 _isCorrectOTP = true;
                                 //context.goNamed('success');
                               });
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>
+                                  WebMainSuccess.sendData(
+                                    inquiryV5ResponseModel:widget.inquiryV5ResponseModel, 
+                                    myAccount:widget.myAccount, 
+                                    identityCode:widget.identityCode)
+                                ));
 
-                              final now=DateTime.now();
-                              String guid=now.microsecondsSinceEpoch.toString();
-                              var confirmResponseModel = await SubmitPayment.submitV2Payment(
-                                ConfirmV2RequestModel(
-                                  billCode: widget.identityCode, 
-                                  customerCode: widget.identityCode, 
-                                  billAmount: widget.inquiryV5ResponseModel.data.transaction.originalAmount, 
-                                  totalAmount: widget.inquiryV5ResponseModel.data.transaction.totalAmount, 
-                                  currency: widget.inquiryV5ResponseModel.data.transaction.currency, 
-                                  paymentToken: widget.inquiryV5ResponseModel.data.transaction.paymentToken, 
-                                  paymentBy: widget.myAccount, 
-                                  paymentAccount: widget.myAccount, 
-                                  paymentType: "Online", 
-                                  refNo: guid, 
-                                  note: "payment from deeplink", 
-                                  paymentAccountName: widget.myAccount, 
-                                  paymentAccountPhoneNumber: widget.myAccount, 
-                                  paymentFee: widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, 
-                                  paymentChannel: widget.inquiryV5ResponseModel.data.transaction.feeChannel, 
-                                  paymentFeeChargeBy: "")
-                              );
-                                if (confirmResponseModel.code != "SUCCESS") {
-                                   await Navigator.pushReplacement(
-                                      (context),
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              WebMainNotSuccess.sendData(
-                                                confirmResponseModel:
-                                                    confirmResponseModel,
-                                                inquiryV5ResponseModel:
-                                                    widget.inquiryV5ResponseModel,
-                                                    myAccount: widget.myAccount,
-                                              )));
-                                } else {
-                                  await Navigator.pushReplacement(
-                                      (context),
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              WebMainSuccess.sendData(
-                                                confirmResponseModel:
-                                                    confirmResponseModel,
-                                                inquiryV5ResponseModel:
-                                                    widget.inquiryV5ResponseModel,
-                                                    myAccount: widget.myAccount,
-                                              )));
-                                }
+                              // final now=DateTime.now();
+                              // String guid=now.microsecondsSinceEpoch.toString();
+                              // var confirmResponseModel = await SubmitPayment.submitV2Payment(
+                              //   ConfirmV2RequestModel(
+                              //     billCode: widget.identityCode, 
+                              //     customerCode: widget.identityCode, 
+                              //     billAmount: widget.inquiryV5ResponseModel.data!.transaction!.originalAmount, 
+                              //     totalAmount: widget.inquiryV5ResponseModel.data!.transaction!.totalAmount, 
+                              //     currency: widget.inquiryV5ResponseModel.data!.transaction!.currency, 
+                              //     paymentToken: widget.inquiryV5ResponseModel.data!.transaction!.paymentToken, 
+                              //     paymentBy: widget.myAccount, 
+                              //     paymentAccount: widget.myAccount, 
+                              //     paymentType: "Online", 
+                              //     refNo: guid, 
+                              //     note: "payment from deeplink", 
+                              //     paymentAccountName: widget.myAccount, 
+                              //     paymentAccountPhoneNumber: widget.myAccount, 
+                              //     paymentFee: widget.inquiryV5ResponseModel.data!.transaction!.convenienceFeeAmount, 
+                              //     paymentChannel: widget.inquiryV5ResponseModel.data!.transaction!.feeChannel, 
+                              //     paymentFeeChargeBy: "")
+                              // );
+                                // if (confirmResponseModel.code != "SUCCESS") {
+                                //    await Navigator.pushReplacement(
+                                //       (context),
+                                //       MaterialPageRoute(
+                                //           builder: (context) =>
+                                //               WebMainNotSuccess.sendData(
+                                //                 confirmResponseModel:
+                                //                     confirmResponseModel,
+                                //                 inquiryV5ResponseModel:
+                                //                     widget.inquiryV5ResponseModel,
+                                //                     myAccount: widget.myAccount,
+                                //               )));
+                                // } else {
+                                //   await Navigator.pushReplacement(
+                                //       (context),
+                                //       MaterialPageRoute(
+                                //           builder: (context) =>
+                                //               WebMainSuccess.sendData(
+                                //                 confirmResponseModel:
+                                //                     confirmResponseModel,
+                                //                 inquiryV5ResponseModel:
+                                //                     widget.inquiryV5ResponseModel,
+                                //                     myAccount: widget.myAccount,
+                                //               )));
+                                // }
                             } else {
                               setState(() {
                                 _isCorrectOTP = false;

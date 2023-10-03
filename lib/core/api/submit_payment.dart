@@ -38,22 +38,19 @@ class SubmitPayment {
       var response =
           await http.post(url, headers: header, body: jsonEncode(body));
 
-      var res = response.body;
-
       if (response.statusCode == 200) {
         return ConfirmV2ResponseModel.fromJson(jsonDecode(response.body));
       } else {
-        throw Exception("=========>$res");
+        throw Exception();
       }
     } catch (ex) {
-      debugPrint("------------->${ex.toString()}");
       throw Exception();
     }
   }
 
   static Future<ConfirmV3ResponseModel> submitV3Payment(
       ConfirmV3RequestModel model) async {
-    final url = Uri.parse(URLBankAPI.baseUrl + URLBankAPI.submitV2Url);
+    final url = Uri.parse(URLBankAPI.baseUrl + URLBankAPI.submitV3Url);
 
     final header = <String, String>{
       'Content-Type': 'application/json',
@@ -79,13 +76,11 @@ class SubmitPayment {
     try {
       var response =
           await http.post(url, headers: header, body: jsonEncode(body));
-
-      var res = response.body;
-
-      if (response.statusCode == 200) {
-        return ConfirmV3ResponseModel.fromJson(jsonDecode(response.body));
+      if (response.statusCode == 200 || response.statusCode==201) {
+        var result=ConfirmV3ResponseModel.fromJson(jsonDecode(response.body));
+        return result;
       } else {
-        throw Exception("=========>$res");
+        throw Exception();
       }
     } catch (ex) {
       debugPrint("------------->${ex.toString()}");

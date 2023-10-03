@@ -177,7 +177,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                             width: 10,
                           ),
                           Text(
-                            widget.inquiryV5ResponseModel.data.merchant.name,
+                            widget.inquiryV5ResponseModel.data!.merchant.name,
                             style: const TextStyle(fontSize: 18,height: 1.5),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -204,9 +204,9 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                           RichText(
                               text: TextSpan(
                                   text: ConvertFormat.convertCurrency(
-                                      widget.inquiryV5ResponseModel.data.transaction
+                                      widget.inquiryV5ResponseModel.data!.transaction!
                                           .originalAmount,
-                                      widget.inquiryV5ResponseModel.data.transaction
+                                      widget.inquiryV5ResponseModel.data!.transaction!
                                           .currency),
                                   style: TextStyle(
                                       fontSize: 30,
@@ -215,7 +215,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   children: [
                                 TextSpan(
                                     text:
-                                        '  ${widget.inquiryV5ResponseModel.data.transaction.currency}',
+                                        '  ${widget.inquiryV5ResponseModel.data!.transaction!.currency}',
                                     style: TextStyle(
                                         fontSize: 18, color: CONST.fontColor))
                               ]))
@@ -241,7 +241,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.originalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.originalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -257,7 +257,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.convenienceFeeAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.convenienceFeeAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],
@@ -279,7 +279,7 @@ class _ResWebConfirmState extends State<ResWebConfirm> {
                                   style: TextStyle(color: CONST.white),
                                 ),
                                 Text(
-                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data.transaction.totalAmount, widget.inquiryV5ResponseModel.data.transaction.currency)} ${widget.inquiryV5ResponseModel.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(widget.inquiryV5ResponseModel.data!.transaction!.totalAmount, widget.inquiryV5ResponseModel.data!.transaction!.currency)} ${widget.inquiryV5ResponseModel.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.white),
                                 )
                               ],

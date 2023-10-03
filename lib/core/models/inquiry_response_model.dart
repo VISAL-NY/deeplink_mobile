@@ -3,10 +3,10 @@ import 'transaction.dart';
 import 'url.dart';
 
 class InquiryV5ResponseModel{
-  String code;
-  String message;
+  String? code;
+  String? message;
   String? messageKh;
-  DataV5 data;
+  DataV5? data;
 
   InquiryV5ResponseModel({required this.code,required this.message,required this.messageKh,required this.data});
 
@@ -22,7 +22,7 @@ class InquiryV5ResponseModel{
 class DataV5{
   Merchant merchant;
   List<CustomerV5> customers;
-  Transaction transaction;
+  Transaction? transaction;
   URL url;
 
   DataV5({required this.merchant,required this.customers,required this.transaction,required this.url});
@@ -31,7 +31,7 @@ class DataV5{
     return DataV5(
       merchant: Merchant.fromJson(json['merchant'] as Map<String,dynamic>), 
       customers: (json['customers'] as List).map((e) => CustomerV5.fromJson(e as Map<String,dynamic>)).toList(), 
-      transaction: Transaction.fromJson(json['transaction'] as Map<String,dynamic>), 
+      transaction:json['transaction']!=null? Transaction.fromJson(json['transaction'] as Map<String,dynamic>):null, 
       url: URL.fromJson(json['url'] as Map<String,dynamic> ) );
   }
 }

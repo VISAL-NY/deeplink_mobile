@@ -19,7 +19,7 @@ class MobileConfirmScreen extends StatefulWidget {
 
 class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
    String myAccount = "";
-   String id="";
+   String identityCode="";
 
   final _controller =
       TextEditingController(text: BankAccountNumber.firstAccount);
@@ -134,7 +134,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
   // }
 
   Future<InquiryV5ResponseModel> inquiryV5Model(){
-    var identityCode=DecodeBase64.decodeBase64(widget.id);
+    identityCode=DecodeBase64.decodeBase64(widget.id);
     return InquiryRequest.requestInquiryV5(InquiryV5RequestModel(identityCode: identityCode, feeChannel: "MERCHANT"));
   }
 
@@ -159,6 +159,53 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
         future: inquiryV5Model(),
         builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if(snapshot.data!.code!=CONST.success){
+            return Container(
+              color: CONST.backColor,
+              alignment: Alignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                 SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: Image.asset("asset/cancel.png")),
+                  const SizedBox(height: 10,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SelectableText("CODE : ",style: TextStyle(color: CONST.white),),
+                          SelectableText(snapshot.data!.code.toString(),style: TextStyle(color: CONST.white),)
+                        ],
+                      ),
+                      const SizedBox(height: 10,),
+                      Row(    
+                        mainAxisSize: MainAxisSize.min,          
+                        children: [
+                           SelectableText("MESSAGE : ",style: TextStyle(color: CONST.white),),
+                          SelectableText(snapshot.data!.message.toString(),style: TextStyle(color: CONST.white),)
+                        ],
+                      ),
+                      const SizedBox(height: 10,),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SelectableText("MESSAGE_KH : ",style: TextStyle(color: CONST.white),),
+                          SelectableText(snapshot.data!.messageKh.toString(),style: TextStyle(color: CONST.white),)
+                        ],
+                      )
+
+                      ],
+                  ),
+                ],
+              ),
+            );
+          }
           return Column(
             children: [
               Expanded(
@@ -184,7 +231,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                               height: 10,
                             ),
                             Text(
-                              snapshot.data!.data.merchant.name,
+                              snapshot.data!.data!.merchant.name,
                               style:
                                   TextStyle(fontSize: 16, color: CONST.white),
                             )
@@ -239,7 +286,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.originalAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data!.transaction!.originalAmount, snapshot.data!.data!.transaction!.currency)}  ${snapshot.data!.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.fontColor))
                             ],
                           ),
@@ -254,7 +301,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                       color: CONST.fontColor,
                                       fontWeight: FontWeight.w500)),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.convenienceFeeAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data!.transaction!.convenienceFeeAmount, snapshot.data!.data!.transaction!.currency)}  ${snapshot.data!.data!.transaction!.currency}",
                                   style: TextStyle(color: CONST.fontColor))
                             ],
                           ),
@@ -273,7 +320,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                       color: CONST.fontColor,
                                       fontWeight: FontWeight.w500)),
                               Text(
-                                  "${ConvertFormat.convertCurrency(snapshot.data!.data.transaction.totalAmount, snapshot.data!.data.transaction.currency)}  ${snapshot.data!.data.transaction.currency}",
+                                  "${ConvertFormat.convertCurrency(snapshot.data!.data!.transaction!.totalAmount, snapshot.data!.data!.transaction!.currency)}  ${snapshot.data!.data!.transaction!.currency}",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: CONST.fontColor,
@@ -298,6 +345,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                                       MobilePinScreen.sendData(
                                         myAccount: myAccount,
                                         inquiryV5ResponseModel: snapshot.data!,
+                                        identityCode: identityCode,
                                       )));
                         },
                         child: Container(
@@ -316,6 +364,12 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
                         ))),
               )
             ],
+          );
+        }
+        else if(snapshot.hasError){
+          return Container(
+            alignment: Alignment.center,
+            child: const Text("Can not request data"),
           );
         }
         else {
