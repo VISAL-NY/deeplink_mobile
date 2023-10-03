@@ -64,7 +64,7 @@ static Future<InquiryV5ResponseModel> requestInquiryV5(InquiryV5RequestModel mod
         }
       }catch(ex)
       {
-        throw Exception();
+        throw ex.toString();
       }
   }
 }

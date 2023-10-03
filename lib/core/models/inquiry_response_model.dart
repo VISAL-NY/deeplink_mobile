@@ -15,7 +15,7 @@ class InquiryV5ResponseModel{
       code: json['code'], 
       message: json['message'],
       messageKh: json['message_kh'], 
-      data: DataV5.fromJson(json['data'] as Map<String,dynamic>));
+      data: json['data']!=null? DataV5.fromJson(json['data'] as Map<String,dynamic>):null);
   }
 }
 

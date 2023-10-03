@@ -18,11 +18,6 @@ class WebMainConfirm extends StatelessWidget {
   WebMainConfirm({required this.suburl,super.key});
   WebMainConfirm.sendData({required this.myAccount,super.key});
 
-  //   Future<InquiryV4ResponseModel> inquiryAsyn(){
-  //    return InquiryRequest.requestInquiryV4();
-  // }
-
-  //DECODE FROM base64
  
 
   Future<InquiryV5ResponseModel> inquiryV5Async(){
@@ -105,7 +100,7 @@ class WebMainConfirm extends StatelessWidget {
          debugPrint("It's Error");
          return Container(
           alignment: Alignment.center,
-          child: const Text("Can not request data"),
+          child:  SelectableText("Can not request data ${snapshot.error.toString()}"),
          );
         }
         else {

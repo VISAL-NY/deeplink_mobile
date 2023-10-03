@@ -135,8 +135,14 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
 
   Future<InquiryV5ResponseModel> inquiryV5Model(){
     identityCode=DecodeBase64.decodeBase64(widget.id);
-    return InquiryRequest.requestInquiryV5(InquiryV5RequestModel(identityCode: identityCode, feeChannel: "MERCHANT"));
+    return InquiryRequest.requestInquiryV5(InquiryV5RequestModel(identityCode: identityCode, feeChannel: "MERCHANT"));   
   }
+
+  // Future<InquiryV5ResponseModel> inquiry() async{
+  //   identityCode=DecodeBase64.decodeBase64(widget.id);
+  //   result = await InquiryRequest.requestInquiryV5(InquiryV5RequestModel(identityCode: identityCode, feeChannel: "MERCHANT"));  
+  //   return result;
+  // }
 
   @override
   void initState() {
@@ -159,7 +165,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
         future: inquiryV5Model(),
         builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data!.code!=CONST.success){
+          if(snapshot.data!.code!="SUCCESS"){
             return Container(
               color: CONST.backColor,
               alignment: Alignment.center,
@@ -369,7 +375,7 @@ class _MobileConfirmScreenState extends State<MobileConfirmScreen> {
         else if(snapshot.hasError){
           return Container(
             alignment: Alignment.center,
-            child: const Text("Can not request data"),
+            child: SelectableText("Can not request data ${snapshot.error.toString()}"),
           );
         }
         else {

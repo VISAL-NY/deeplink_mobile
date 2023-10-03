@@ -1,17 +1,13 @@
 import 'dart:io';
-
 import 'package:deeplink_cookbook/core/api/submit_payment.dart';
 import 'package:deeplink_cookbook/core/helper/convert_format.dart';
 import 'package:deeplink_cookbook/core/models/confirm_request_model.dart';
 import 'package:deeplink_cookbook/core/models/confirm_response_model.dart';
 import 'package:deeplink_cookbook/core/models/inquiry_response_model.dart';
 import 'package:deeplink_cookbook/core/models/models.dart';
-import 'package:deeplink_cookbook/presentation/screenshot_widget/screenshot.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MobileSuccessScreen extends StatelessWidget {
@@ -60,38 +56,48 @@ class MobileSuccessScreen extends StatelessWidget {
               future: confirmV3Asyn(),
               builder: ((context, snapshot) {
                 if (snapshot.hasData) {
-                  if (snapshot.data!.code != CONST.success) {
+                  if (snapshot.data!.code != "SUCCESS") {
                     return Container(
+                      color: CONST.backColor,
                       alignment: Alignment.center,
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset("asset/cancel.png",width: 40,height: 60,),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text("CODE : "),
-                                Text(snapshot.data!.code)
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                const Text("MESSAGE : "),
-                                Text(snapshot.data!.message)
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                const Text("MESSAGE_KH : "),
-                                Text(snapshot.data!.messageKh!)
-                              ],
-                            )
-                          ]),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("CODE : ",style: TextStyle(color: CONST.white),),
+                                    Text(snapshot.data!.code,style: TextStyle(color: CONST.white))
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                     Text("MESSAGE : ",style: TextStyle(color: CONST.white)),
+                                    Text(snapshot.data!.message,style: TextStyle(color: CONST.white))
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("MESSAGE_KH : ",style: TextStyle(color: CONST.white)),
+                                    Text(snapshot.data!.messageKh!,style: TextStyle(color: CONST.white))
+                                  ],
+                                )
+                              ]),
+                        ],
+                      ),
                     );
                   }
                   return Stack(children: [
@@ -170,23 +176,23 @@ class MobileSuccessScreen extends StatelessWidget {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600))
                                         ])),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("Transaction Date",
-                                            style: TextStyle(
-                                                color: CONST.fontColor)),
-                                        Text(
-                                            ConvertFormat
-                                                .convertDateTimeToString(""),
-                                            style: TextStyle(
-                                                color: CONST.fontColor))
-                                      ],
-                                    ),
+                                    // const SizedBox(
+                                    //   height: 20,
+                                    // ),
+                                    // Row(
+                                    //   mainAxisAlignment:
+                                    //       MainAxisAlignment.spaceBetween,
+                                    //   children: [
+                                    //     Text("Transaction Date",
+                                    //         style: TextStyle(
+                                    //             color: CONST.fontColor)),
+                                    //     Text(
+                                    //         ConvertFormat
+                                    //             .convertDateTimeToString(""),
+                                    //         style: TextStyle(
+                                    //             color: CONST.fontColor))
+                                    //   ],
+                                    // ),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -278,55 +284,57 @@ class MobileSuccessScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  screenshotController
-                                      .captureFromWidget(
-                                          //Screenshot widget
-                                          const ScreenShotWidget())
-                                      .then((image) async {
-                                    //save image to gallery
-                                    final file = await _getDirectory();
-                                    await file.writeAsBytes(image);
+                          // Row(
+                          //   mainAxisSize: MainAxisSize.min,
+                          //   children: [
+                          //     IconButton(
+                          //       onPressed: () {
+                          //         screenshotController
+                          //             .captureFromWidget(
+                          //                 //Screenshot widget
+                          //                 const ScreenShotWidget())
+                          //             .then((image) async {
+                          //           //save image to gallery
+                          //           final file = await _getDirectory();
+                          //           await file.writeAsBytes(image);
 
-                                    //save image to gallery
-                                    final result =
-                                        await ImageGallerySaver.saveFile(
-                                            file.path);
-                                    if (result['isSuccess']) {
-                                      _flutterToastMessage(
-                                          (context), 'Image Saved');
-                                    } else {
-                                      _flutterToastMessage(
-                                          (context), 'Image Unsaved');
-                                    }
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.file_download_outlined,
-                                  color: CONST.backColor.withOpacity(0.8),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  screenshotController
-                                      .captureFromWidget(
-                                          const ScreenShotWidget())
-                                      .then((image) async {
-                                    final file = await _getDirectory();
-                                    await Share.shareFiles([file.path]);
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.share_outlined,
-                                  color: CONST.backColor.withOpacity(0.8),
-                                ),
-                              ),
-                            ],
-                          )
+                          //           //save image to gallery
+                          //           final result =
+                          //               await ImageGallerySaver.saveFile(
+                          //                   file.path);
+                          //           if (result['isSuccess']) {
+                          //             _flutterToastMessage(
+                          //                 (context), 'Image Saved');
+                          //           } else {
+                          //             _flutterToastMessage(
+                          //                 (context), 'Image Unsaved');
+                          //           }
+                          //         });
+                          //       },
+                          //       icon: Icon(
+                          //         Icons.file_download_outlined,
+                          //         color: CONST.backColor.withOpacity(0.8),
+                          //       ),
+                          //     ),
+                          //     IconButton(
+                          //       onPressed: () {
+                          //         screenshotController
+                          //             .captureFromWidget(
+                          //                 const ScreenShotWidget())
+                          //             .then((image) async {
+                          //           final file = await _getDirectory();
+                          //           await Share.shareFiles([file.path]);
+                          //         });
+                          //       },
+                          //       icon: Icon(
+                          //         Icons.share_outlined,
+                          //         color: CONST.backColor.withOpacity(0.8),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // )
+                        
+                        
                         ],
                       )),
                       Padding(
