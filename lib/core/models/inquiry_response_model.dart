@@ -12,10 +12,10 @@ class InquiryV5ResponseModel{
 
   factory InquiryV5ResponseModel.fromJson(Map<String,dynamic> json){
     return InquiryV5ResponseModel(
-      code: json['code'], 
-      message: json['message'],
-      messageKh: json['message_kh'], 
-      data: json['data']!=null? DataV5.fromJson(json['data'] as Map<String,dynamic>):null);
+      code: json['code'] ?? "", 
+      message: json['message'] ?? "",
+      messageKh: json['message_kh'] ?? "", 
+      data: json['data'] !=null ? DataV5.fromJson(json['data'] as Map<String,dynamic>):null);
   }
 }
 
